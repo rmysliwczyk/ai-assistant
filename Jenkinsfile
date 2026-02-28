@@ -10,7 +10,7 @@ pipeline {
                     ]) {
                         sh """
                         rm .env || true
-                        echo "OLLAMA_API_KEY=${OLLAMA_API_KEY}" >> .env
+                        echo "OLLAMA_API_KEY=${OLLAMA_API_KEY}" >> backend/.env
                         """
                     }
                 }
