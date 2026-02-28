@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelector("#chat-form").addEventListener("submit", async function(event) {
 		event.preventDefault();
 
-		let ws = new WebSocket("ws://127.0.0.1:8888/chat");
+		let ws = new WebSocket("ws://assistant.mysliwczykrafal.pl:80/chat");
 		let latestResponseChunks = "";
 
 		const submitButton = document.querySelector('input[type="submit"]');
