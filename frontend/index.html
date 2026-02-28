@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chatbot</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+		<script src="chat.js"></script>
+	</head>
+	<body>
+		<div id="all-messages-container">
+			<div id="message-history-container">
+			</div>
+			<div id="latest-response" class="message-container">
+			</div>
+		</div>
+		<div id="chat-form-container">
+			<form id="chat-form">
+				<div>
+					<input id="content" type="text" autocomplete="off" />
+				</div>
+				<div>
+					<input type="submit" value="Send message"/>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
