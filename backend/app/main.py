@@ -77,8 +77,8 @@ Rafał Myśliwczyk – Skills
 - General: Git, Linux, English (C2), soft skills
 
 Rafał Myśliwczyk – Education
-- Master's degree in English studies – SWPS University in Warsaw
-- Computer Science (3rd year, ongoing) – Warsaw University of Life Sciences
+- Master's degree in English studies (completed) – SWPS University in Warsaw (Original Polish name: Uniwersytet SWPS)
+- Computer Science (3rd year, ongoing) – Warsaw University of Life Sciences (Original Polish name: SGGW (Szkoła Główna Gospodarstwa Wiejskiego))
 
 Rafał Myśliwczyk – Certificates
 - CS50x – Introduction to Computer Science
