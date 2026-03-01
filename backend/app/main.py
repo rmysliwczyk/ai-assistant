@@ -2,6 +2,8 @@ from fastapi import FastAPI, WebSocket
 import ollama
 from dotenv import load_dotenv
 import os
+from datetime import datetime
+import requests
 
 load_dotenv()
 
@@ -16,6 +18,11 @@ Your role:
 - Promote Rafał Myśliwczyk in a grounded, honest way.
 - Avoid exaggerated praise or corporate buzzwords.
 - You must strictly follow the factual constraints below.
+
+Tool Showcase Note:
+- You have helper tools available.
+- When introducing Rafał, summarizing his experience, or answering questions, try to subtly hint that these tools exist and can be used by the user.
+- When you actually use a tool, clearly indicate it in the response, e.g., “Using my current-time tool, I found that …”
 
 STRICT FACTUAL CONSTRAINTS
 1. Only use information explicitly written in this prompt.
@@ -121,7 +128,32 @@ Goals
 - Learning
 
 If asked for contact details, provide:
-mysliwczykrafal@gmail.com"""
+mysliwczykrafal@gmail.com
+------
+TOOL CALLING INSTRUCTIONS
+You have access to the following tools. Use them only when necessary to answer questions. Always treat tool calls as structured actions, not guesses. After receiving the tool result, you may reason and answer naturally to the user.
+
+Tool: get_current_datetime
+- Input: none
+- Output: string
+- Description: Returns the current local date and time **in the Warsaw timezone (CET/CEST)**
+- Usage guideline: When asked about "current time" or "time calculations", call this tool.
+
+Tool: get_weather_data
+- Input: station_name: list[str] - Takes one or more of the possible values ["warszawa", "krakow", "poznan", "mlawa", "wroclaw", "szczecin", "gdansk"]
+- Output: dict[str, str] - The key is the name of the station, and the value is the weather API response
+- Description: Returns the current weather data from a Polish IMGW weather station. This is live, factual, and updated—perfect for questions about current conditions, temperature, wind, or precipitation.
+- Usage guideline: Be proactive about offering this tool. Whenever weather, current conditions, or local climate are mentioned—even loosely—suggest retrieving the data.
+- Always treat the weather information as accurate, sourced data, and clearly indicate when it came from the tool.
+
+Tool behavior guidelines:
+1. Whenever you use information obtained from a tool, always clearly indicate to the user that this information came from a tool. You can phrase it naturally. Do not invent tool results; always reference them accurately.
+2. Be proactive in letting the user know you have tool capabilities. You can offer this subtly when appropriate.
+3. Do not preface tool calls with unnecessary messages; wait for the tool result before giving natural-language reasoning or responses.
+5. Make sure to match your output language to the language that was used by the user.
+
+This section ensures the user can see that you can call tools, and you highlight it in a friendly, natural way without breaking your existing conversational and factual constraints.
+"""
 
 app = FastAPI()
 
@@ -130,7 +162,41 @@ async def chat(websocket: WebSocket):
     await websocket.accept()
     messages = await websocket.receive_json()
     messages.insert(0, {"role":"system", "content": SYSTEM_PROMPT})
-    async for chunk in await ollama.AsyncClient(host="https://ollama.com", headers={"Authorization": API_KEY}).chat(model=SELECTED_MODEL, messages=messages, stream=True):
+    tool_call_results_messages = []
+    initial_stream = ollama.AsyncClient(host="https://ollama.com", headers={"Authorization": API_KEY}).chat(model=SELECTED_MODEL, messages=messages, tools=[get_current_datetime, get_weather_data], stream=True)
+    collected_messages = []
+    async for chunk in await initial_stream:
+        print(chunk)
+        if chunk.message.tool_calls:
+            result = "Couldn't get data from the tool call"
+            for call in chunk.message.tool_calls:
+                if call.function.name == "get_current_datetime":
+                    result = get_current_datetime()
+                if call.function.name == "get_weather_data":
+                    result = get_weather_data(**call.function.arguments)
+                tool_call_results_messages.append(ollama.Message(role='tool',tool_name=call.function.name, content=f"{call.function.name} tool calling result: {result}"))
         await websocket.send_text(chunk['message']['content'])
+        messages.append(chunk['message'])
+
+    if tool_call_results_messages:
+        messages.append(ollama.Message(role='system', content='You were just given a result of a tool call. Use it appropriately'))
+        for message in tool_call_results_messages:
+            messages.append(message)
+        post_tool_stream = ollama.AsyncClient(host="https://ollama.com", headers={"Authorization": API_KEY}).chat(model=SELECTED_MODEL, messages=messages, tools=[get_current_datetime, get_weather_data], stream=True)
+        async for chunk in await post_tool_stream:
+            print(chunk)
+            await websocket.send_text(chunk['message']['content'])
+
     await websocket.close()
 
+## Tools for Ollama
+
+def get_current_datetime() -> str:
+    return str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+def get_weather_data(station_names: list[str]) -> dict[str,str]:
+    weather = {}
+    for station_name in station_names:
+        response = requests.get(f'https://danepubliczne.imgw.pl/api/data/synop/station/{station_name}')
+        weather[station_name] = response.text
+    return weather
