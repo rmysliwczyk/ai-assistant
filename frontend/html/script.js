@@ -1,63 +1,37 @@
 let messageHistory = [];
 
 async function displayMessageHistory(messages) {
-	const messageHistoryDiv = document.querySelector('#message-history-container');
+	const messageHistoryDiv = document.querySelector('#messages-container');
 	messageHistoryDiv.innerHTML = "";
 	for(let message of messages) {
 		const newMessageDiv = document.createElement("div");
-		const newRoleDiv = document.createElement("div");
-		const newContentP = document.createElement("p");
-
+		const newHeaderDiv = document.createElement("div");
+		const newContentDiv = document.createElement("div");
 
 		newMessageDiv.className = 'message-container';
 		newMessageDiv.style.display = "block";
 
-		newRoleDiv.className = 'role-hint-container';
-		newRoleDiv.innerText = message.role == "user" ? "You:" : "Assistant:";
+		newHeaderDiv.className = 'message-header';
+		newHeaderDiv.innerText = message.role == "user" ? "You:" : "Assistant:";
 
-		newContentP.innerHTML = message.content;
+		newContentDiv.className = 'message-content';
+		newContentDiv.innerHTML = message.content;
 
-
-		newMessageDiv.append(newRoleDiv);
-		newMessageDiv.append(newContentP);
+		newMessageDiv.append(newHeaderDiv);
+		newMessageDiv.append(newContentDiv);
 		messageHistoryDiv.append(newMessageDiv);
 	}
 	window.scrollTo(0, document.body.scrollHeight);
 }
 
+
 async function displayLatestResponse(latestResponseText) {
-	const latestResponseDiv = document.querySelector('#latest-response');
-	if (latestResponseDiv.querySelector('.role-hint-container') == undefined) {
-		const newRoleDiv = document.createElement("div");
-		newRoleDiv.className = 'role-hint-container';
-		newRoleDiv.innerText = "Assistant:";
-		latestResponseDiv.append(newRoleDiv);
-	}
-
-	const latestResponseContentDiv = latestResponseDiv.querySelector('.latest-response-content-container');
-	if (latestResponseContentDiv == undefined) {
-		const latestResponseContentDiv = document.createElement("div");
-		latestResponseContentDiv.className = 'latest-response-content-container';
-		latestResponseContentDiv.innerHTML = marked.parse(latestResponseText);
-		latestResponseDiv.append(latestResponseContentDiv);
-	} else {
-		latestResponseContentDiv.innerHTML = marked.parse(latestResponseText);
-	}
-
-	latestResponseDiv.style.display = "block";
+	const messageContainers = document.querySelectorAll('.message-container')
+	const latestResponseContainer = messageContainers.item(messageContainers.length - 1)
+	const latestResponseContentDiv = latestResponseContainer.querySelector('.message-content');
+	latestResponseContentDiv.innerHTML = latestResponseText;
 }
 
-async function pushLatestResponseToMessageHistory(messages) {
-	const latestResponseDiv = document.querySelector('#latest-response');
-	const latestResponseContentDiv = latestResponseDiv.querySelector('.latest-response-content-container');
-	let latestResponseContent = marked.parse(latestResponseContentDiv.innerHTML);
-	if (latestResponseContent.length > 0) {
-		messages.push({"role": "assistant", "content": latestResponseContent});
-		latestResponseDiv.innerHTML = "";
-		latestResponseDiv.style.display = "none";
-		displayMessageHistory(messages);
-	}
-}
 
 document.addEventListener("DOMContentLoaded", function() {
 	document.querySelector("#chat-form").addEventListener("submit", async function(event) {
@@ -71,26 +45,26 @@ document.addEventListener("DOMContentLoaded", function() {
 		submitButton.value = "Generating response..."
 
 		const content = document.querySelector('#content').value;
-		const message = { "role": "user", "content": content};
-		messageHistory.push(message);
+		messageHistory.push({"role": "user", "content": content});
 
 		displayMessageHistory(messageHistory);
 		
 		ws.onopen = function() {
 			ws.send(JSON.stringify(messageHistory))
+			messageHistory.push({"role": "assistant", "content": ""})
+			displayMessageHistory(messageHistory);
 		}
 
 		document.querySelector('#content').value = "";
 		ws.onmessage = function(event) {
 			latestResponseChunks += event.data;
-			// addToLatestResponse(event.data);
-			displayLatestResponse(latestResponseChunks);
-
+			messageHistory.at(-1).content = marked.parse(latestResponseChunks);
+			displayLatestResponse(messageHistory.at(-1).content);
 			window.scrollTo(0, document.body.scrollHeight);
 		};
 
 		ws.onclose = function() {
-			pushLatestResponseToMessageHistory(messageHistory)
+			messageHistory.at(-1).content = marked.parse(latestResponseChunks);
 			submitButton.disabled = false;
 			submitButton.value = "Send message"
 		}

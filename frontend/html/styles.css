@@ -1,35 +1,35 @@
+:root {
+	color-scheme: light dark;
+
+	--dark-mode-background: 
+}
+
+@font-face {
+	font-family: Montserat;
+	src: url("Montserrat-VariableFont_wght.ttf");
+}
+
 body {
-	font-family: Verdana, Geneva, Tahoma, sans-serif
+	font-family: Montserat, Verdana, Geneva, Tahoma, sans-serif;
+
 }
 
-#chat-form {
-	margin-top: 15px;
+#header {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 10px;
 }
 
-#all-messages-container {
-	display: flex;
-	width: 100%;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
+#header h1 {
+	font-weight: 400;
 }
 
-#message-history-container {
+#messages-container {
 	display: flex;
 	width: 100%;
 	flex-direction: column;
 	align-items: center;
-	gap: 5px;
-}
-
-@media only screen and (min-width: 600px) {
-	.message-container {
-		max-width: 700px;
-	}
+	gap: 10px;
 }
 
 .message-container {
@@ -41,16 +41,29 @@ body {
 	overflow: auto;
 }
 
-.role-hint-container {
+@media only screen and (min-width: 600px) {
+	.message-container {
+		max-width: 700px;
+	}
+}
+
+.message-header {
 	color: grey;
 }
 
-.latest-response-content-container {
-	width: 100%;
-	color: black;
+.message-content {
+}
+
+#chat-form {
+	margin-top: 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
 }
 
 input[type=text] {
+	width: 300px;
 	padding: 10px;
 	font-weight: 300;
 	font-size: medium;
@@ -59,25 +72,26 @@ input[type=text] {
 }
 
 input[type=submit] {
-	background-color: rgb(85, 107, 47);
+	width: 220px;
+	background-color: #415a77;
 	color: white;
 	border: none;
 	padding: 10px;
-	font-weight: 700;
+	font-weight: 500;
 	font-size: large;
 	border-radius: 5px;
 }
 
 input[type=submit]:disabled {
-	background-color: rgb(155, 155, 155);
+	background-color: #808080;
 }
 
 input[type=submit]:hover:not(:disabled) {
-	background-color: rgb(115, 148, 58);
+	background-color: #778da9;
 	cursor: pointer;
 }
 
 input[type=submit]:active:not(:disabled) {
-	background-color: rgb(86, 144, 95);
+	background-color: #1b263b;
 	cursor: pointer;
 }

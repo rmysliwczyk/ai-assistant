@@ -2,27 +2,24 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Chatbot</title>
+		<title>AI Assistant 🤖</title>
 		<link rel="stylesheet" href="styles.css" />
-		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 		<script src="script.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 	</head>
 	<body>
-		<div id="all-messages-container">
-			<div id="message-history-container">
-			</div>
-			<div id="latest-response" class="message-container">
-			</div>
+		<div id="header">
+			<h1>Rafał Myśliwczyk - AI Assistant 🤖</h1>
 		</div>
-		<div id="chat-form-container">
-			<form id="chat-form">
-				<div>
-					<input id="content" type="text" autocomplete="off" />
-				</div>
-				<div>
-					<input type="submit" value="Send message"/>
-				</div>
-			</form>
+		<div id="messages-container">
 		</div>
+		<form id="chat-form">
+			<div>
+				<input id="content" type="text" autocomplete="off" placeholder="Type your message..." autofocus/>
+			</div>
+			<div>
+				<input type="submit" value="Send message"/>
+			</div>
+		</form>
 	</body>
 </html>
