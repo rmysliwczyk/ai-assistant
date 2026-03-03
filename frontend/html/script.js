@@ -1,3 +1,4 @@
+const CHAT_WEBSOCKET_URL = "ws://assistant.mysliwczykrafal.pl:80/chat"
 let messageHistory = [];
 
 async function displayMessageHistory(messages) {
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelector("#chat-form").addEventListener("submit", async function(event) {
 		event.preventDefault();
 
-		let ws = new WebSocket("ws://assistant.mysliwczykrafal.pl:80/chat");
+		let ws = new WebSocket(CHAT_WEBSOCKET_URL);
 		let latestResponseChunks = "";
 
 		const submitButton = document.querySelector('input[type="submit"]');
