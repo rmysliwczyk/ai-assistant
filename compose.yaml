@@ -9,3 +9,8 @@ services:
   backend:
     build: backend/.
     restart: always
+  mcp_server:
+    build: mcp_server/.
+    ports:
+      - "9000:9000"
+    restart: always
