@@ -4,7 +4,7 @@ Agentic AI Assistant made with Ollama, FastAPI, and HTML+CSS+JS Check it out [he
 
 ## 🌟 Highlights
 
-- 🤖 Tool calling capabilities
+- 🤖 Tool calling capabilities through MCP protocol server/client architecture
 - 🎭 Custom System prompt for defining the Assistant's behaviour
 - 🌤️ Access to real time public weather API data from [IMGW.pl](https://danepubliczne.imgw.pl/pl/apiinfo)
 - 🕒 Accurate date and time access
@@ -18,6 +18,7 @@ Agentic AI Assistant made with Ollama, FastAPI, and HTML+CSS+JS Check it out [he
 - <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/refs/heads/main/icons/HTML.svg" width=24/> <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/refs/heads/main/icons/CSS.svg" width=24/> <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/refs/heads/main/icons/JavaScript.svg" width=24/> **HTML, CSS, JS** for the frontend
 - <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/refs/heads/main/icons/Jenkins-Light.svg" width=24/> **Jenkins** for CI/CD
 - <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/refs/heads/main/icons/Docker.svg" width=24/> **Docker** and **Docker Compose** for CI/CD
+- <img src="https://gofastmcp.com/mintlify-assets/_mintlify/favicons/fastmcp/1KQviU8vsE4vEF8n/_generated/favicon-dark/favicon-32x32.png" width=24/> **FastMCP** for MCP server and client
 
 ## 👉 Try it!
 
