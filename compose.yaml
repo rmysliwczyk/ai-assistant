@@ -3,8 +3,6 @@ services:
     build: frontend/.
     ports:
       - "8888:80"
-    volumes:
-      - ./frontend/default.conf:/etc/nginx/conf.d/default.conf:ro,z
     restart: always
   backend:
     build: backend/.
